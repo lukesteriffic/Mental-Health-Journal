@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mind App CI609 assignment</title>
+    
+    
+    <link rel="manifest" href="manifest.json">
+    <!-- CSS -->
+    <link href="index.css" rel="stylesheet" type="text/css">
+    
+    
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <script src="encryption.js"></script>
+    <script src="weather.js"></script>
+    <script src="auth.js"></script>
+    <script src="app.js"></script>
+    
+    
+    
+    
+    
+</head>
+<body>
+    <!-- PIN Setup/Login Screen -->
+    <div id="auth-screen" class="screen active">
+        <div class="auth-container">
+            <header class="auth-header">
+                <h1> CI609 Mind App assignment</h1>
+                <p>Your private mental health journal</p>
+                <p class="app-info">Works offline as well!</p>
+            </header>
+
+            <!-- PIN Setup (For first time users) -->
+            <div id="setup-pin" class="auth-form">
+                <h2>Set up your PIN</h2>
+                <p class="instruction">Create a 4-digit PIN to secure your data</p>
+                
+                <div class="pin-input-container">
+                    <div class="pin-dots">
+                        <span class="pin-dot" data-index="0"></span>
+                        <span class="pin-dot" data-index="1"></span>
+                        <span class="pin-dot" data-index="2"></span>
+                        <span class="pin-dot" data-index="3"></span>
+                    </div>
+                    <input type="password" id="pin-input" maxlength="4" inputmode="numeric" autocomplete="off" style="opacity: 0; position: absolute; left: -9999px;">
+                </div>
+
+                <p id="pin-error" class="error-message" style="display: none;"></p>
+                
+                <div class="keypad">
+                    <div class="keypad-row">
+                        <button class="key" data-value="1">1</button>
+                        <button class="key" data-value="2">2</button>
+                        <button class="key" data-value="3">3</button>
+                    </div>
+                    <div class="keypad-row">
+                        <button class="key" data-value="4">4</button>
+                        <button class="key" data-value="5">5</button>
+                        <button class="key" data-value="6">6</button>
+                    </div>
+                    <div class="keypad-row">
+                        <button class="key" data-value="7">7</button>
+                        <button class="key" data-value="8">8</button>
+                        <button class="key" data-value="9">9</button>
+                    </div>
+                    <div class="keypad-row">
+                        <button class="key" data-value="clear">⌫</button>
+                        <button class="key" data-value="0">0</button>
+                        <button class="key" data-value="submit">✓</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PIN Login (For returning users) -->
+            <div id="login-pin" class="auth-form" style="display: none;">
+                <h2>Enter your PIN</h2>
+                <p class="instruction">Enter your 4-digit PIN to continue</p>
+                
+                <div class="pin-input-container">
+                    <div class="pin-dots">
+                        <span class="pin-dot" data-index="0"></span>
+                        <span class="pin-dot" data-index="1"></span>
+                        <span class="pin-dot" data-index="2"></span>
+                        <span class="pin-dot" data-index="3"></span>
+                    </div>
+                    <input type="password" id="login-pin-input" maxlength="4" inputmode="numeric" autocomplete="off" style="opacity: 0; position: absolute; left: -9999px;">
+                </div>
+
+                <p id="login-error" class="error-message" style="display: none;"></p>
+                
+                <div class="keypad">
+                    <div class="keypad-row">
+                        <button class="key" data-value="1">1</button>
+                        <button class="key" data-value="2">2</button>
+                        <button class="key" data-value="3">3</button>
+                    </div>
+                    <div class="keypad-row">
+                        <button class="key" data-value="4">4</button>
+                        <button class="key" data-value="5">5</button>
+                        <button class="key" data-value="6">6</button>
+                    </div>
+                    <div class="keypad-row">
+                        <button class="key" data-value="7">7</button>
+                        <button class="key" data-value="8">8</button>
+                        <button class="key" data-value="9">9</button>
+                    </div>
+                    <div class="keypad-row">
+                        <button class="key" data-value="clear">⌫</button>
+                        <button class="key" data-value="0">0</button>
+                        <button class="key" data-value="submit">✓</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="offline-note">
+                <p> All data is encrypted and stored locally and no account is needed for anonymous use.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main App Screen (initially hidden) -->
+    <div id="app-screen" class="screen">
+        <header class="app-header">
+            <div class="header-left">
+                <h1>Mind Journal</h1>
+                <div id="connection-status" class="connection-status offline" title="Offline mode">
+                    📶
+                </div>
+            </div>
+            <button id="logout-btn" class="logout-btn">Logout</button>
+        </header>
+
+        <main class="app-main">
+            <!-- Mood Logging Interface -->
+            <div id="mood-logger" class="mood-logger active">
+                <div class="mood-container">
+                    <h2>How are you feeling right now?</h2>
+                    
+                    <!-- Mood Selection -->
+                    <div class="mood-selection">
+                        <div class="mood-options">
+                            <button class="mood-option" data-mood="ecstatic" data-emoji="😄">
+                                <span class="emoji">😄</span>
+                                <span class="mood-label">Ecstatic</span>
+                            </button>
+                            <button class="mood-option" data-mood="happy" data-emoji="😊">
+                                <span class="emoji">😊</span>
+                                <span class="mood-label">Happy</span>
+                            </button>
+                            <button class="mood-option" data-mood="neutral" data-emoji="😐">
+                                <span class="emoji">😐</span>
+                                <span class="mood-label">Neutral</span>
+                            </button>
+                            <button class="mood-option" data-mood="sad" data-emoji="😢">
+                                <span class="emoji">😢</span>
+                                <span class="mood-label">Sad</span>
+                            </button>
+                            <button class="mood-option" data-mood="anxious" data-emoji="😰">
+                                <span class="emoji">😰</span>
+                                <span class="mood-label">Anxious</span>
+                            </button>
+                            <button class="mood-option" data-mood="angry" data-emoji="😠">
+                                <span class="emoji">😠</span>
+                                <span class="mood-label">Angry</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Comment Input -->
+                    <div class="comment-section">
+                        <label for="mood-comment">What's on your mind? (optional)</label>
+                        <textarea 
+                            id="mood-comment" 
+                            placeholder="Describe what you're feeling or why you feel this way..."
+                            maxlength="500"
+                        ></textarea>
+                        <div class="char-count">
+                            <span id="char-count">0</span>/500 characters
+                        </div>
+                    </div>
+
+                    <!-- Weather Display -->
+                    <div class="weather-info">
+                        <div class="weather-loading" id="weather-loading">
+                            <span>Getting weather data...</span>
+                        </div>
+                        <div class="weather-display" id="weather-display" style="display: none;">
+                            <div class="weather-main">
+                                <span class="weather-icon" id="weather-icon">🌤️</span>
+                                <div class="weather-details">
+                                    <span class="weather-condition" id="weather-condition">Clear sky</span>
+                                    <span class="weather-temp" id="weather-temp">15°C</span>
+                                </div>
+                            </div>
+                            <div class="weather-extra">
+                                <span class="weather-location" id="weather-location">Getting location...</span>
+                                <span class="weather-time" id="weather-time"></span>
+                            </div>
+                            <div class="weather-status" id="weather-status"></div>
+                        </div>
+                        <div class="weather-error" id="weather-error" style="display: none;">
+                            <span>Weather data unavailable</span>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="action-buttons">
+                        <button id="save-entry" class="save-btn" disabled>
+                            Save Entry
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Entries List View (initially hidden) -->
+            <div id="entries-view" class="entries-view">
+                <div class="entries-header">
+                    <h2>Your Journal Entries <span id="entry-count" class="entry-count">0</span></h2>
+                    <div class="entries-controls">
+                        <select id="mood-filter">
+                            <option value="all">All Moods</option>
+                            <option value="ecstatic">😄 Ecstatic</option>
+                            <option value="happy">😊 Happy</option>
+                            <option value="neutral">😐 Neutral</option>
+                            <option value="sad">😢 Sad</option>
+                            <option value="anxious">😰 Anxious</option>
+                            <option value="angry">😠 Angry</option>
+                        </select>
+                        <button id="clear-filter" class="clear-filter">Clear Filter</button>
+                        <button id="delete-all-btn" class="delete-all-btn" disabled>
+                            Delete All
+                        </button>
+                    </div>
+                </div>
+                <div id="entries-container" class="entries-container">
+                    <!-- Entries will be dynamically added here -->
+                    <div class="no-entries" id="no-entries">
+                        <p>No entries yet. Start by logging your first mood!</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <nav class="app-nav">
+            <button id="new-entry-btn" class="nav-btn active">New Entry</button>
+            <button id="view-entries-btn" class="nav-btn">History</button>
+            <button id="export-btn" class="nav-btn">Export</button>
+        </nav>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="delete-modal" class="modal-overlay">
+        <div class="confirmation-modal">
+            <h3>Delete All Entries</h3>
+            <p id="delete-modal-text">Are you sure you want to delete all journal entries? This action cannot be undone.</p>
+            <div class="modal-buttons">
+                <button id="cancel-delete" class="modal-btn cancel">Cancel</button>
+                <button id="confirm-delete" class="modal-btn confirm">Delete All</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Install Button -->
+    <div id="pwa-install-container"></div>
+
+    
+   
+    
+    
+    <!--  Service Worker Registration -->
+    <script>
+    
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function() {
+            navigator.serviceWorker.register('sw.js')
+                .then(function(registration) {
+                    console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                    
+                    // Check for updates
+                    registration.addEventListener('updatefound', () => {
+                        const newWorker = registration.installing;
+                        console.log('Service Worker update found!');
+                        
+                        newWorker.addEventListener('statechange', () => {
+                            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                
+                                console.log('New version available');
+                                //  Shows update notification
+                                if (confirm('A new version of the Mind App is available. Reload to update?')) {
+                                    window.location.reload();
+                                }
+                            }
+                        });
+                    });
+                })
+                .catch(function(error) {
+                    console.log('ServiceWorker registration failed: ', error);
+                });
+        });
+    }
+
+    // Installation Prompt
+    let deferredPrompt;
+    
+    window.addEventListener('beforeinstallprompt', (e) => {
+        // Prevents the browser from automatically showing the prompt
+        e.preventDefault();
+        
+        deferredPrompt = e;
+        
+        // Create install button
+        showInstallPromotion();
+    });
+    
+    function showInstallPromotion() {
+        // Check if we're already in standalone mode
+        if (window.matchMedia('(display-mode: standalone)').matches || 
+            window.navigator.standalone === true) {
+            return; // Already installed
+        }
+        
+        // Create install button
+        const installButton = document.createElement('button');
+        installButton.id = 'install-button';
+        installButton.innerHTML = '📲 Install App';
+        installButton.style.cssText = `
+            position: fixed;
+            bottom: 100px;
+            right: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            padding: 12px 24px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        `;
+        
+        installButton.addEventListener('mouseenter', () => {
+            installButton.style.transform = 'translateY(-2px)';
+            installButton.style.boxShadow = '0 6px 20px rgba(0,0,0,0.3)';
+        });
+        
+        installButton.addEventListener('mouseleave', () => {
+            installButton.style.transform = 'translateY(0)';
+            installButton.style.boxShadow = '0 4px 15px rgba(0,0,0,0.2)';
+        });
+        
+        installButton.addEventListener('click', () => {
+            installButton.style.display = 'none';
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        console.log('User accepted the install prompt');
+                    } else {
+                        console.log('User dismissed the install prompt');
+                        // Show button again after 1 minute
+                        setTimeout(showInstallPromotion, 60000);
+                    }
+                    deferredPrompt = null;
+                });
+            }
+        });
+        
+        // Hides the install prompt on the side after 30 seconds
+        setTimeout(() => {
+            if (installButton.parentNode) {
+                installButton.style.opacity = '0';
+                installButton.style.transform = 'translateY(20px)';
+                setTimeout(() => {
+                    if (installButton.parentNode) {
+                        installButton.parentNode.removeChild(installButton);
+                    }
+                }, 300);
+            }
+        }, 30000);
+        
+        document.getElementById('pwa-install-container').appendChild(installButton);
+    }
+
+    // Online/Offline Detection
+    function updateOnlineStatus() {
+        const isOnline = navigator.onLine;
+        const statusElement = document.getElementById('connection-status');
+        
+        if (statusElement) {
+            if (isOnline) {
+                statusElement.className = 'connection-status online';
+                statusElement.title = 'Online';
+                statusElement.innerHTML = '📶';
+            } else {
+                statusElement.className = 'connection-status offline';
+                statusElement.title = 'Offline - Using cached data';
+                statusElement.innerHTML = '📶';
+                
+                // Shows offline notification in app if it's loaded
+                if (window.app && window.app.weatherData) {
+                    window.app.weatherData.condition = 'Offline - Cached Data';
+                    window.app.weatherData.icon = '📶';
+                    
+                    // Update weather display if visible
+                    const weatherDisplay = document.getElementById('weather-display');
+                    if (weatherDisplay && weatherDisplay.style.display !== 'none') {
+                        const conditionElement = document.getElementById('weather-condition');
+                        const iconElement = document.getElementById('weather-icon');
+                        if (conditionElement) conditionElement.textContent = 'Offline - Cached Data';
+                        if (iconElement) iconElement.textContent = '📶';
+                    }
+                }
+            }
+        }
+        
+        // Update weather status
+        const weatherStatus = document.getElementById('weather-status');
+        if (weatherStatus) {
+            if (!isOnline) {
+                weatherStatus.textContent = 'Using cached weather data';
+                weatherStatus.style.display = 'block';
+                weatherStatus.style.color = '#ff6b6b';
+                weatherStatus.style.fontSize = '0.8rem';
+                weatherStatus.style.marginTop = '0.5rem';
+            } else {
+                weatherStatus.style.display = 'none';
+            }
+        }
+    }
+
+    //CSS for connection status
+    const style = document.createElement('style');
+    style.textContent = `
+        .connection-status {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            margin-left: 10px;
+            font-size: 16px;
+        }
+        
+        .connection-status.online {
+            background: rgba(40, 167, 69, 0.2);
+            color: #28a745;
+        }
+        
+        .connection-status.offline {
+            background: rgba(255, 107, 107, 0.2);
+            color: #ff6b6b;
+            animation: pulse 2s infinite;
+        }
+        
+        .header-left {
+            display: flex;
+            align-items: center;
+        }
+        
+        .app-info {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 0.5rem;
+        }
+        
+        .offline-note {
+            margin-top: 1.5rem;
+            padding: 0.75rem;
+            background: #f8f9fa;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            color: #666;
+        }
+        
+        .weather-status {
+            font-size: 0.8rem;
+            color: #666;
+            text-align: center;
+            margin-top: 0.5rem;
+            padding: 0.25rem;
+            border-radius: 5px;
+            background: rgba(255, 107, 107, 0.1);
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+    `;
+    document.head.appendChild(style);
+
+    window.addEventListener('online', updateOnlineStatus);
+    window.addEventListener('offline', updateOnlineStatus);
+    
+    // Initial check
+    updateOnlineStatus();
+    
+    
+    if (window.matchMedia('(display-mode: standalone)').matches || 
+        window.navigator.standalone === true) {
+        console.log('App is running in standalone PWA mode');
+        document.body.classList.add('pwa-standalone');
+    }
+    </script>
+</body>
+</html>

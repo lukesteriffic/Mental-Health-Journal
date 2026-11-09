@@ -1,0 +1,833 @@
+/* Reset and base styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    color: #333;
+}
+
+/* Screen management */
+.screen {
+    display: none;
+    min-height: 100vh;
+}
+
+.screen.active {
+    display: block;
+}
+
+/* Authentication Screen */
+#auth-screen {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.auth-container {
+    background: white;
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+}
+
+.auth-header h1 {
+    color: #667eea;
+    margin-bottom: 0.5rem;
+    font-size: 2rem;
+}
+
+.auth-header p {
+    color: #666;
+    margin-bottom: 2rem;
+}
+
+/* PIN Input */
+.pin-input-container {
+    margin: 2rem 0;
+    text-align: center;
+}
+
+.pin-dots {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.pin-dot {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #ddd;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    display: inline-block;
+}
+
+.pin-dot.filled {
+    background: #667eea;
+    border-color: #667eea;
+    transform: scale(1.1);
+}
+
+/* Keypad */
+.keypad {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.keypad-row {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+}
+
+.key {
+    width: 60px;
+    height: 60px;
+    border: none;
+    border-radius: 50%;
+    background: #f8f9fa;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #333;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.key:hover {
+    background: #e9ecef;
+    transform: scale(1.05);
+}
+
+.key:active {
+    transform: scale(0.95);
+}
+
+.key[data-value="submit"] {
+    background: #667eea;
+    color: white;
+}
+
+.key[data-value="clear"] {
+    background: #ff6b6b;
+    color: white;
+}
+
+/* Error messages */
+.error-message {
+    color: #ff6b6b;
+    margin: 1rem 0;
+    font-size: 0.9rem;
+}
+
+.instruction {
+    color: #666;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+}
+
+/* App Screen */
+#app-screen {
+    background: white;
+}
+
+.app-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logout-btn {
+    background: rgba(255,255,255,0.2);
+    border: 1px solid rgba(255,255,255,0.3);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.logout-btn:hover {
+    background: rgba(255,255,255,0.3);
+}
+
+.app-main {
+    padding: 1rem;
+    padding-bottom: 80px; /* Space for navigation */
+}
+
+.app-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: white;
+    border-top: 1px solid #eee;
+    display: flex;
+    padding: 0.5rem;
+}
+
+.nav-btn {
+    flex: 1;
+    padding: 0.75rem;
+    border: none;
+    background: none;
+    cursor: pointer;
+    border-radius: 10px;
+    transition: background 0.3s ease;
+}
+
+.nav-btn.active {
+    background: #667eea;
+    color: white;
+}
+
+/* Mood Logging Interface */
+.mood-logger {
+    display: none;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.mood-logger.active {
+    display: block;
+}
+
+.mood-container h2 {
+    text-align: center;
+    margin-bottom: 2rem;
+    color: #333;
+    font-weight: 300;
+}
+
+/* Mood Selection */
+.mood-selection {
+    margin-bottom: 2rem;
+}
+
+.mood-options {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.mood-option {
+    background: #f8f9fa;
+    border: 2px solid #e9ecef;
+    border-radius: 15px;
+    padding: 1.5rem 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.mood-option:hover {
+    background: #e9ecef;
+    transform: translateY(-2px);
+}
+
+.mood-option.selected {
+    background: #667eea;
+    border-color: #667eea;
+    color: white;
+    transform: scale(1.05);
+}
+
+.emoji {
+    font-size: 2rem;
+}
+
+.mood-label {
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+/* Comment Section */
+.comment-section {
+    margin-bottom: 2rem;
+}
+
+.comment-section label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #333;
+    font-weight: 500;
+}
+
+#mood-comment {
+    width: 100%;
+    min-height: 120px;
+    padding: 1rem;
+    border: 2px solid #e9ecef;
+    border-radius: 10px;
+    font-family: inherit;
+    font-size: 1rem;
+    resize: vertical;
+    transition: border-color 0.3s ease;
+}
+
+#mood-comment:focus {
+    outline: none;
+    border-color: #667eea;
+}
+
+.char-count {
+    text-align: right;
+    font-size: 0.8rem;
+    color: #666;
+    margin-top: 0.5rem;
+}
+
+/* Weather Display */
+.weather-info {
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.weather-loading, .weather-display, .weather-error {
+    padding: 1rem;
+    border-radius: 10px;
+    margin-bottom: 1rem;
+}
+
+.weather-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    background: #f8f9fa;
+}
+
+.weather-display {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.weather-error {
+    background: #f8d7da;
+    color: #721c24;
+    text-align: center;
+    border: 1px solid #f5c6cb;
+}
+
+.weather-main {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.weather-icon {
+    font-size: 2.5rem;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+}
+
+.weather-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.weather-condition {
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+.weather-temp {
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.weather-extra {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85rem;
+    opacity: 0.9;
+    border-top: 1px solid rgba(255,255,255,0.2);
+    padding-top: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+/* Action Buttons */
+.action-buttons {
+    text-align: center;
+}
+
+.save-btn {
+    background: #667eea;
+    color: white;
+    border: none;
+    border-radius: 25px;
+    padding: 1rem 3rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.save-btn:hover:not(:disabled) {
+    background: #5a6fd8;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+.save-btn:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.save-btn:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
+}
+
+/* Entries View */
+.entries-view {
+    display: none;
+}
+
+.entries-view.active {
+    display: block;
+}
+
+.entries-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.entries-controls {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+#mood-filter {
+    padding: 0.5rem;
+    border: 2px solid #e9ecef;
+    border-radius: 5px;
+    background: white;
+    font-family: inherit;
+}
+
+.clear-filter {
+    background: #6c757d;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+.clear-filter:hover {
+    background: #5a6268;
+}
+
+/* Delete All Button */
+.delete-all-btn {
+    background: #dc3545;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.delete-all-btn:hover:not(:disabled) {
+    background: #c82333;
+    transform: translateY(-1px);
+}
+
+.delete-all-btn:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.delete-all-btn:disabled {
+    background: #6c757d;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.delete-all-btn::before {
+    content: '🗑️';
+    font-size: 0.9rem;
+}
+
+/* Entry Count Badge */
+.entry-count {
+    background: #667eea;
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-left: 0.5rem;
+}
+
+/* Entry Cards */
+.entries-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.entry-card {
+    background: white;
+    border: 1px solid #e9ecef;
+    border-radius: 15px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    transition: transform 0.2s ease;
+}
+
+.entry-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+}
+
+.entry-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+}
+
+.entry-mood {
+    font-size: 2rem;
+    margin-right: 1rem;
+}
+
+.entry-details {
+    flex: 1;
+}
+
+.entry-date {
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 0.25rem;
+}
+
+.entry-weather {
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.weather-detail {
+    font-size: 0.8rem;
+    color: #666;
+    display: block;
+    margin-top: 0.25rem;
+}
+
+.entry-comment {
+    color: #333;
+    line-height: 1.5;
+    margin-top: 0.5rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid #f8f9fa;
+}
+
+/* No Entries Message */
+.no-entries {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: #666;
+    background: #f8f9fa;
+    border-radius: 15px;
+    border: 2px dashed #dee2e6;
+    margin: 1rem 0;
+}
+
+.no-entries p {
+    margin-bottom: 0.5rem;
+}
+
+.no-entries p:last-child {
+    margin-bottom: 0;
+}
+
+/* Filter Suggestion Text */
+.filter-suggestion {
+    font-size: 0.9rem;
+    color: #666;
+    margin-top: 0.5rem;
+    font-style: italic;
+}
+
+/* Confirmation Modal */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-overlay.active {
+    display: flex;
+}
+
+.confirmation-modal {
+    background: white;
+    border-radius: 15px;
+    padding: 2rem;
+    max-width: 400px;
+    width: 90%;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+
+.confirmation-modal h3 {
+    color: #dc3545;
+    margin-bottom: 1rem;
+}
+
+.confirmation-modal p {
+    color: #666;
+    margin-bottom: 1.5rem;
+    line-height: 1.5;
+}
+
+.modal-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.modal-btn {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    flex: 1;
+}
+
+.modal-btn.cancel {
+    background: #6c757d;
+    color: white;
+}
+
+.modal-btn.cancel:hover {
+    background: #5a6268;
+}
+
+.modal-btn.confirm {
+    background: #dc3545;
+    color: white;
+}
+
+.modal-btn.confirm:hover {
+    background: #c82333;
+}
+
+/* Weather Icon Animations */
+@keyframes weather-spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.weather-loading::after {
+    content: "";
+    width: 20px;
+    height: 20px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #667eea;
+    border-radius: 50%;
+    animation: weather-spin 1s linear infinite;
+}
+
+/* Weather-specific icons */
+.weather-sunny {
+    animation: pulse 2s infinite;
+}
+
+.weather-cloudy {
+    animation: float 3s infinite ease-in-out;
+}
+
+.weather-rainy {
+    animation: drip 1.5s infinite;
+}
+
+.weather-snowy {
+    animation: snow-fall 2s infinite;
+}
+
+.weather-thunder {
+    animation: flash 0.5s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+}
+
+@keyframes drip {
+    0% { transform: translateY(0); opacity: 1; }
+    100% { transform: translateY(10px); opacity: 0; }
+}
+
+@keyframes snow-fall {
+    0% { transform: translateY(-5px) rotate(0deg); }
+    100% { transform: translateY(5px) rotate(360deg); }
+}
+
+@keyframes flash {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+/* Shake Animation for Wrong PIN */
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+    20%, 40%, 60%, 80% { transform: translateX(5px); }
+}
+
+.shake {
+    animation: shake 0.5s ease-in-out;
+}
+
+/* Success Message Animations */
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOut {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
+
+.success-message {
+    animation: slideIn 0.3s ease;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .mood-options {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .entries-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .entries-controls {
+        justify-content: center;
+    }
+    
+    .save-btn {
+        padding: 1rem 2rem;
+        width: 100%;
+    }
+    
+    .modal-buttons {
+        flex-direction: column;
+    }
+    
+    .modal-btn {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .auth-container {
+        margin: 1rem;
+        padding: 1.5rem;
+    }
+    
+    .key {
+        width: 50px;
+        height: 50px;
+        font-size: 1rem;
+    }
+    
+    .app-header h1 {
+        font-size: 1.5rem;
+    }
+    
+    .mood-options {
+        grid-template-columns: 1fr;
+    }
+    
+    .mood-option {
+        padding: 1rem;
+    }
+    
+    .emoji {
+        font-size: 1.5rem;
+    }
+    
+    .weather-main {
+        flex-direction: column;
+        text-align: center;
+        gap: 0.5rem;
+    }
+    
+    .weather-extra {
+        flex-direction: column;
+        gap: 0.25rem;
+        text-align: center;
+    }
+}
