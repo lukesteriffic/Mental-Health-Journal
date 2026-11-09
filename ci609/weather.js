@@ -2,7 +2,7 @@
 class WeatherService {
     constructor() {
         // Gets API key from OpenWeatherMap
-        this.apiKey = '3440a262e1956a181d2033c6ec27acd5'; 
+        this.apiKey = //Placeholder for API key  
         this.baseUrl = 'https://api.openweathermap.org/data/2.5/weather';
         this.geoUrl = 'https://api.openweathermap.org/geo/1.0/direct';
         this.weatherData = null;
