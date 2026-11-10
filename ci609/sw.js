@@ -216,7 +216,7 @@ self.addEventListener('sync', (event) => {
 // Sync weather data in background
 function syncWeatherData() {
   return caches.open(CACHE_NAME).then(cache => {
-    return fetch('https://api.openweathermap.org/data/2.5/weather?lat=51.5074&lon=-0.1278&units=metric&appid=3440a262e1956a181d2033c6ec27acd5')
+    return fetch('https://api.openweathermap.org/data/2.5/weather?lat=51.5074&lon=-0.1278&units=metric&appid=PLACEHOLDER')// "Placeholder" is for the actual API key
       .then(response => {
         if (response.ok) {
           return cache.put('https://api.openweathermap.org/data/2.5/weather', response);
